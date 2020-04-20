@@ -1,0 +1,7 @@
+name = Islandora MODS-via-Twig
+description = "Process collection/mods.csv to generate individual object pid_MODS.xml replacemet datastreams via Drush"
+package = Islandora Tools
+version = 7.x-dev
+core = 7.x
+dependencies[] = islandora
+php = 5.3
