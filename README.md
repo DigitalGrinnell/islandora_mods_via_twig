@@ -1,6 +1,12 @@
 # Islandora MODS-Via-Twig
 
-A Drush/Islandora v7 copy of [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) which was written for Drupal v8.  Sections which follow currently discuss that predecessor, [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig).
+A Drush/Islandora v7 copy of [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) which was written for Drupal v8.  
+
+## islandora_mods_via_twig Command
+
+This project is responsible for creation of the `islandora_mods_via_twig`, alias `drush imvt` command.
+
+> Sections below this point were lifted directly from the [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) README.md document so they describe that predecessor project.
 
 # mods-via-twig
 Drush script uses IMI Twig template to generate new MODS .xml files from .csv data.
