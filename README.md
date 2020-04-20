@@ -4,7 +4,7 @@ A Drush/Islandora v7 copy of [Mods-Via-Twig](https://github.com/DigitalGrinnell/
 
 ## islandora_mods_via_twig Command
 
-This project is responsible for creation of the `islandora_mods_via_twig`, alias `drush imvt` command.
+This project is responsible for creation of the Drush `islandora_mods_via_twig`, alias `drush imvt`, command.
 
 > Sections below this point were lifted directly from the [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) README.md document so they describe that predecessor project.
 
