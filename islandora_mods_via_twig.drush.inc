@@ -73,7 +73,7 @@ function drush_islandora_mods_via_twig_islandora_mods_via_twig_validate() { retu
  * @see drush_invoke()
  * @see drush.api.php
  */
-function drush_islandora_mods_via_twig_islandora_mods_via_twig($target_collection = 'social-justice') {
+function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
 
   define('SEPERATOR', ",");
   define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
