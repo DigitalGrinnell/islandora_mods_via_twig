@@ -14,20 +14,26 @@
  * See `drush topic docs-commands` for a list of recognized keys.
  */
 function islandora_mods_via_twig_drush_command() {
-  $items = array();
+  $commands = array();
 
-  // The 'mods-via-twig' command.
-  $items['mods-via-twig'] = array(
-    'description' => "Generate MODS .xml files from a collection's MASTER .csv file.",
-    'arguments' => array(
-      'collection' => 'The name of the collection to be processed.  Defaults to "social-justice".',
+  // The 'islandora_mods_via_twig' command.
+  $commands['islandora_mods_via_twig'] = array(
+    'description' => dt('Generate MODS .xml files from the mods.csv file for a specified collection.'),
+    'drupal dependencies' => array(
+      'islandora',
     ),
-    'aliases' => array('mvt'),
-    // No bootstrap at all?
-    'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',
+    'arguments' => array(
+      'collection' => dt('The name of the collection to be processed.  Defaults to "social-justice".'),
+    ),
+    'aliases' => array('imvt'),
+    'examples' => array(
+      'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods.csv.'),
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    // 'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',  // No bootstrap at all?
   );
 
-  return $items;
+  return $commands;
 }
 
 /**
@@ -39,7 +45,7 @@ function islandora_mods_via_twig_drush_command() {
  * OR returning FALSE is sufficient.  See drush.api.php
  * for more details.
  */
-function drush_mods_via_twig_mods_via_twig_validate() { return TRUE; }
+function drush_islandora_mods_via_twig_islandora_mods_via_twig_validate() { return TRUE; }
 
 /**
  * Implements drush_hook_COMMAND().
@@ -67,14 +73,14 @@ function drush_mods_via_twig_mods_via_twig_validate() { return TRUE; }
  * @see drush_invoke()
  * @see drush.api.php
  */
-function drush_mods_via_twig_mods_via_twig($target_collection = 'social-justice') {
+function drush_islandora_mods_via_twig_islandora_mods_via_twig($target_collection = 'social-justice') {
 
   define('SEPERATOR', ",");
   define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
   define('COLLECTIONS_PATH', './sites/default/files/collections/');
   define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
 
-  echo "\n\n\nWelcome to drush mods-via-twig!\n";
+  echo "\n\n\nWelcome to drush islandora_mods_via_twig!\n";
 
   // Twig handling is based on https://stackoverflow.com/questions/24888372/drupal-8-render-twig-from-string-with-twig-functions
 
@@ -146,6 +152,6 @@ function drush_mods_via_twig_mods_via_twig($target_collection = 'social-justice'
     }    // end: if (is_dir($collection)...
   }    // end: foreach (scandir(COLLECTIONS_PATH)...
 
-  echo "\n\ndrush mods-via-twig is finished!\n\n";
+  echo "\n\ndrush islandora_mods_via_twig is finished!\n\n";
 
 }
