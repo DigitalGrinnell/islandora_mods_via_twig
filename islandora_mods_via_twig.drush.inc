@@ -140,11 +140,11 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
           $data = array_filter( $row );  // echo "data: \n", print_r($data, TRUE), "\n";
 
           $pid = $data['pid'];    // fetch the PID and check it for proper form
-          if (!startsWith($pid, "grinnell:")) {
+          $pos = strpos($pid, "grinnell:");
+          if ($pos === false || $pos !== 0) {
             echo "data: \n", print_r($data, TRUE), "\n";
             return drush_set_error('Bad PID', dt("An invalid PID was encountered. Process terminated."));
           }
-
 
           if (!isset($data['import_source'])) {
             $data['import_source'] = $files[0];  // push the .tsv path into dg_importSource if that field is empty
