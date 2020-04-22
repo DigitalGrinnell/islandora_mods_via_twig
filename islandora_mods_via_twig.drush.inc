@@ -18,7 +18,7 @@ function islandora_mods_via_twig_drush_command() {
 
   // The 'islandora_mods_via_twig' command.
   $commands['islandora_mods_via_twig'] = array(
-    'description' => dt('Generate MODS .xml files from the mods.csv file for a specified collection.'),
+    'description' => dt('Generate MODS .xml files from the mods-imvt*.tsv file for a specified collection.'),
     'drupal dependencies' => array(
       'islandora',
     ),
@@ -27,7 +27,7 @@ function islandora_mods_via_twig_drush_command() {
     ),
     'aliases' => array('imvt'),
     'examples' => array(
-      'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods.csv.'),
+      'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods-imvt*.tsv.'),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     // 'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',  // No bootstrap at all?
@@ -118,20 +118,21 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       $files = glob(COLLECTIONS_PATH."/$collection/mods-imvt*.tsv");
       $count = count($files);
       if ($count != 1) {
-        return drush_set_error('Bad CSV count', dt("The $collection directory contains $count mods-imvt*.tsv files."));
+        return drush_set_error('Bad TSV count', dt("The $collection directory contains $count mods-imvt*.tsv files."));
       }
 
-      // process the one and only .csv file in $collection
-      // read the .csv exploded into an array of $lines
-      $lines = explode("\n", file_get_contents($files[0]));  // echo "$lines: ", print_r($lines, TRUE);
+      // process the found .tsv file in $collection
+      // read the .tsv exploded into an array of $lines
+      $lines = explode("\n", file_get_contents($files[0]));
+      echo "$lines: ", print_r($lines, TRUE);
 
       // break out the $headers, assuming SEPERATOR, into an array, and create an empty $data array
       $headers = str_getcsv(array_shift( $lines ), SEPERATOR);  // echo "headers: \n", print_r($headers, TRUE), "\n\n";
       $data = array();
 
-      // loop on the .csv line-by-line, one object at a time
+      // loop on the .tsv line-by-line, one object at a time
       foreach ($lines as $line) {
-        if (strlen($line) > 0) {    // skip any blank rows in the .csv
+        if (strlen($line) > 0) {    // skip any blank rows in the .tsv
           $row = array();
           foreach (str_getcsv($line, SEPERATOR) as $key => $field )
             // echo "key => field: " . print_r($key, TRUE) . " => " . print_r($field, TRUE) . "\n";
@@ -139,14 +140,14 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
           $data = array_filter( $row );  // echo "data: \n", print_r($data, TRUE), "\n";
 
           $pid = $data['pid'];    // fetch the PID and check it for proper form
-          if (strlen($pid) > 20) {
+          if (!startWith($pid, "grinnell:")) {
             echo "data: \n", print_r($data, TRUE), "\n";
             return drush_set_error('Bad PID', dt("An invalid PID was encountered. Process terminated."));
           }
 
 
           if (!isset($data['import_source'])) {
-            $data['import_source'] = $files[0];  // push the .csv path into dg_importSource if that field is empty
+            $data['import_source'] = $files[0];  // push the .tsv path into dg_importSource if that field is empty
           }
 
           // make the .xml output directory path if it does not already exist
