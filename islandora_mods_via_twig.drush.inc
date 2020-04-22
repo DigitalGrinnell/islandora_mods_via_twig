@@ -123,8 +123,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
 
       // process the found .tsv file in $collection
       // read the .tsv exploded into an array of $lines
-      $lines = explode("\n", file_get_contents($files[0]));
-      echo "$lines: ", print_r($lines, TRUE);
+      $lines = explode("\n", file_get_contents($files[0]));  // echo "$lines: ", print_r($lines, TRUE);
 
       // break out the $headers, assuming SEPERATOR, into an array, and create an empty $data array
       $headers = str_getcsv(array_shift( $lines ), SEPERATOR);  // echo "headers: \n", print_r($headers, TRUE), "\n\n";
