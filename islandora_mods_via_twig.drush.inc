@@ -80,6 +80,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   // define('COLLECTIONS_PATH', './sites/default/files/collections/');
   define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master-Rev18.twig');
   define('COLLECTIONS_PATH', '/mnt/metadata-review');
+  define('XML_OUTPUT_PATH', '/ready-for-datastream-replace');
   define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
 
   // Note that the TWIG and COLLECTIONS_PATH defined above depend on the following mount/mapping on DGDocker1...
@@ -143,7 +144,13 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
             $data['import_source'] = $files[0];  // push the .csv path into dg_importSource if that field is empty
           }
 
-          $xml_path = COLLECTIONS_PATH . "/$collection/ready-for-datastream-replace/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
+          // make the .xml output directory path if it does not already exist
+          $xml_dir = COLLECTIONS_PATH . "/$collection" . XML_OUTPUT_PATH;
+          if (!file_exists($xml_dir)) {
+              mkdir($xml_dir, 0777, true);
+          }
+
+          $xml_path .= "/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
           $imi_like_data['data'] = $data;
           $rendered = $Twig->render($TwigString, $imi_like_data);    // echo "rendered: \n".$rendered."\n\n";
 
