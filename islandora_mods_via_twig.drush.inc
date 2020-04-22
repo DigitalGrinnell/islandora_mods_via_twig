@@ -82,6 +82,10 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   define('COLLECTIONS_PATH', '/mnt/metadata-review/');
   define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
 
+  // Note that the TWIG and COLLECTIONS_PATH defined above depend on the following mount/mapping on DGDocker1...
+  //  docker exec -it isle-apache-dg bash
+  //  mount -t cifs -o username=mcfatem /storage.grinnell.edu/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1 /mnt/metadata-review
+
   echo "\n\n\nWelcome to drush islandora_mods_via_twig!\n";
 
   // Twig handling is based on https://stackoverflow.com/questions/24888372/drupal-8-render-twig-from-string-with-twig-functions
@@ -109,18 +113,18 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   foreach ($paths as $collection) {    // drush_print("Now processing $collection.");
     if ($collection == $target_collection && $collection != '.' && $collection != '..' && is_dir(COLLECTIONS_PATH."/".$collection)) {
       drush_print("Now processing the collection in: $collection.");
-      // look for one, and only one *.csv file inside
-      $files = glob(COLLECTIONS_PATH."/$collection/*.csv");
+      // look for one, and only one mods-imvt*.csv file inside
+      $files = glob(COLLECTIONS_PATH."/$collection/mods-imvt*.csv");
       $count = count($files);
       if ($count != 1) {
-        return drush_set_error('Bad CSV count', dt("The $collection directory contains $count .csv files."));
+        return drush_set_error('Bad CSV count', dt("The $collection directory contains $count mods-imvt*.csv files."));
       }
 
       // process the one and only .csv file in $collection
       // read the .csv exploded into an array of $lines
       $lines = explode("\n", file_get_contents($files[0]));  // echo "$lines: ", print_r($lines, TRUE);
 
-      // break out the $headers, assuming a \t (tab) seperator, into an array, and create an empty $data array
+      // break out the $headers, assuming SEPERATOR, into an array, and create an empty $data array
       $headers = str_getcsv(array_shift( $lines ), SEPERATOR);  // echo "headers: \n", print_r($headers, TRUE), "\n\n";
       $data = array();
 
@@ -136,10 +140,10 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
           $pid = $data['pid'];    // fetch the PID
 
           if (!isset($data['import_source'])) {
-            $data['import_source'] = STORAGE_PATH . "/$collection/mods.csv";  // push the .csv path into dg_importSource if that field is empty
+            $data['import_source'] = $files[0];  // push the .csv path into dg_importSource if that field is empty
           }
 
-          $xml_path = COLLECTIONS_PATH . "/$collection/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
+          $xml_path = COLLECTIONS_PATH . "/$collection/ready-for-datastream-replace/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
           $imi_like_data['data'] = $data;
           $rendered = $Twig->render($TwigString, $imi_like_data);    // echo "rendered: \n".$rendered."\n\n";
 
