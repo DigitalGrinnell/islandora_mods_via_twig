@@ -75,7 +75,7 @@ function drush_islandora_mods_via_twig_islandora_mods_via_twig_validate() { retu
  */
 function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
 
-  define('SEPERATOR', ",");
+  define('SEPERATOR', "\t");
   // define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
   // define('COLLECTIONS_PATH', './sites/default/files/collections/');
   define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master-Rev18.twig');
@@ -138,7 +138,8 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
             $row[ strtolower($headers[ $key ]) ] = trim($field);    // make sure we convert headers (keys) to lowercase!
           $data = array_filter( $row );  // echo "data: \n", print_r($data, TRUE), "\n";
 
-          $pid = $data['pid'];    // fetch the PID
+          $pid = $data['pid'];    // fetch the PID and check it for proper form
+
 
           if (!isset($data['import_source'])) {
             $data['import_source'] = $files[0];  // push the .csv path into dg_importSource if that field is empty
