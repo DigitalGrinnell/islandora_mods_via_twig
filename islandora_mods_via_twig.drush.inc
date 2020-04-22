@@ -150,7 +150,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
               mkdir($xml_dir, 0777, true);
           }
 
-          $xml_path .= "/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
+          $xml_path = "$xml_dir/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
           $imi_like_data['data'] = $data;
           $rendered = $Twig->render($TwigString, $imi_like_data);    // echo "rendered: \n".$rendered."\n\n";
 
