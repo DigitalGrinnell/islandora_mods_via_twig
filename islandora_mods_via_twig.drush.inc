@@ -114,11 +114,11 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   foreach ($paths as $collection) {    // drush_print("Now processing $collection.");
     if ($collection == $target_collection && $collection != '.' && $collection != '..' && is_dir(COLLECTIONS_PATH."/".$collection)) {
       drush_print("Now processing the collection in: $collection.");
-      // look for one, and only one mods-imvt*.csv file inside
-      $files = glob(COLLECTIONS_PATH."/$collection/mods-imvt*.csv");
+      // look for one, and only one mods-imvt*.tsv file inside
+      $files = glob(COLLECTIONS_PATH."/$collection/mods-imvt*.tsv");
       $count = count($files);
       if ($count != 1) {
-        return drush_set_error('Bad CSV count', dt("The $collection directory contains $count mods-imvt*.csv files."));
+        return drush_set_error('Bad CSV count', dt("The $collection directory contains $count mods-imvt*.tsv files."));
       }
 
       // process the one and only .csv file in $collection
