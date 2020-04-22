@@ -79,7 +79,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   // define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
   // define('COLLECTIONS_PATH', './sites/default/files/collections/');
   define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master-Rev18.twig');
-  define('COLLECTIONS_PATH', '/mnt/metadata-review/');
+  define('COLLECTIONS_PATH', '/mnt/metadata-review');
   define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
 
   // Note that the TWIG and COLLECTIONS_PATH defined above depend on the following mount/mapping on DGDocker1...
