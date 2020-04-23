@@ -18,7 +18,7 @@ function islandora_mods_via_twig_drush_command() {
 
   // The 'islandora_mods_via_twig' command.
   $commands['islandora_mods_via_twig'] = array(
-    'description' => dt('Generate MODS .xml files from the mods-imvt*.tsv file for a specified collection.'),
+    'description' => dt('Generate MODS .xml files from the mods-imvt.tsv file for a specified collection.'),
     'drupal dependencies' => array(
       'islandora',
     ),
@@ -27,7 +27,7 @@ function islandora_mods_via_twig_drush_command() {
     ),
     'aliases' => array('imvt'),
     'examples' => array(
-      'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods-imvt*.tsv.'),
+      'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods-imvt.tsv.'),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
     // 'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',  // No bootstrap at all?
@@ -114,16 +114,15 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   foreach ($paths as $collection) {    // drush_print("Now processing $collection.");
     if ($collection == $target_collection && $collection != '.' && $collection != '..' && is_dir(COLLECTIONS_PATH."/".$collection)) {
       drush_print("Now processing the collection in: $collection.");
-      // look for one, and only one mods-imvt*.tsv file inside
-      $files = glob(COLLECTIONS_PATH."/$collection/mods-imvt*.tsv");
-      $count = count($files);
-      if ($count != 1) {
-        return drush_set_error('Bad TSV count', dt("The $collection directory contains $count mods-imvt*.tsv files."));
+      // look for THE mods-imvt.tsv file inside
+      $file = COLLECTIONS_PATH . "/$collection/mods-imvt.tsv";
+      if (!file_exists($file)) {
+        return drush_set_error('No mods-imvt.tsv file found', dt("The $collection directory contains NO mods-imvt.tsv file."));
       }
 
       // process the found .tsv file in $collection
       // read the .tsv exploded into an array of $lines
-      $lines = explode("\n", file_get_contents($files[0]));  // echo "$lines: ", print_r($lines, TRUE);
+      $lines = explode("\n", file_get_contents($file));  // echo "$lines: ", print_r($lines, TRUE);
 
       // break out the $headers, assuming SEPERATOR, into an array, and create an empty $data array
       $headers = str_getcsv(array_shift( $lines ), SEPERATOR);  // echo "headers: \n", print_r($headers, TRUE), "\n\n";

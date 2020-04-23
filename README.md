@@ -1,10 +1,19 @@
 # Islandora MODS-Via-Twig
 
-A Drush/Islandora v7 copy of [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) which was written for Drupal v8.  
+A Drush/Islandora v7 copy of [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) which was written for Drupal v8.
 
 ## islandora_mods_via_twig Command
 
 This project is responsible for creation of the Drush `islandora_mods_via_twig`, alias `drush imvt`, command.
+
+# Canonical MODS Metadata
+
+Inside the _Apache_ container on _DGDocker1_ I used the following command to mount the canonical MODS metadata directory for access by _Digital.Grinnell_ like so:
+
+```
+docker exec -it isle-apache-dg bash
+mount -t cifs -o username=mcfatem /storage.grinnell.edu/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1 /mnt/metadata-review
+```
 
 > Sections below this point were lifted directly from the [Mods-Via-Twig](https://github.com/DigitalGrinnell/mods-via-twig) README.md document so they describe that predecessor project.
 
@@ -329,13 +338,13 @@ As mentioned at the top of this post, this project and the `drush mods-via-twig`
 
 ## Launching the _Lando_ Environment
 
-This project uses [Lando](https:/lando.dev) to spin up a pristine, local _Drupal 8_ instance to work in.  You can start, stop, and otherwise manage the project using `lando` commands issued from `markmcfate@ma7053 ~/GitHub/lando-mods-via-twig` like so: 
+This project uses [Lando](https:/lando.dev) to spin up a pristine, local _Drupal 8_ instance to work in.  You can start, stop, and otherwise manage the project using `lando` commands issued from `markmcfate@ma7053 ~/GitHub/lando-mods-via-twig` like so:
 
   - `lando info` - Prints the status of this `Lando` project. A sample of the command and its output are posted below.
   - `lando start` - Launch the project.  This is necessary before running the script itself.
   - `lando stop` - Stop the project.
   - `lando drush mvt social-justice` - Run the script to process to process the `mods.csv` file for a specified collection. Details can be found in the next section below.
-  
+
 ```bash
 ╭─markmcfate@ma7053 ~/GitHub/lando-mods-via-twig ‹ruby-2.3.0› ‹master*›
 ╰─$ lando info
@@ -361,9 +370,8 @@ This project uses [Lando](https:/lando.dev) to spin up a pristine, local _Drupal
     version: '5.7',
     meUser: 'www-data',
     hostnames: [ 'database.modsviatwig.internal' ] } ]
- ```   
+ ```
 
 ## The `lando drush mvt` Command
 
-The `mvt`, or `mods-via-twig` command, is used to generate individual `<PID>_MODS.xml` files in a specified collection's `~/GitHub/lando-mods-via-twig/sites/default/files/collections/` directory.  The command expects to find a single `mods.csv` file in the specified collection directory, and it will create one `<PID>_MODS.xml` file for each object listed in that `mods.csv` file.  `<PID>` in the filename will match the `PID` column entry from the `mods.csv` but with the colon (:) seperator replaced by an underscore (_).  For example, the command `lando drush mvt social-justice` will process `~/GitHub/lando-mods-via-twig/sites/default/files/collections/social-justice/mods.csv` and generate corresponding `grinnell_<PID>_MODS.xml` files in the `~/GitHub/lando-mods-via-twig/sites/default/files/collections/social-justice/` directory.  
-
+The `mvt`, or `mods-via-twig` command, is used to generate individual `<PID>_MODS.xml` files in a specified collection's `~/GitHub/lando-mods-via-twig/sites/default/files/collections/` directory.  The command expects to find a single `mods.csv` file in the specified collection directory, and it will create one `<PID>_MODS.xml` file for each object listed in that `mods.csv` file.  `<PID>` in the filename will match the `PID` column entry from the `mods.csv` but with the colon (:) seperator replaced by an underscore (_).  For example, the command `lando drush mvt social-justice` will process `~/GitHub/lando-mods-via-twig/sites/default/files/collections/social-justice/mods.csv` and generate corresponding `grinnell_<PID>_MODS.xml` files in the `~/GitHub/lando-mods-via-twig/sites/default/files/collections/social-justice/` directory.
