@@ -78,7 +78,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   define('SEPERATOR', "\t");
   // define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
   // define('COLLECTIONS_PATH', './sites/default/files/collections/');
-  define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master-Rev18.twig');
+  define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master.twig');
   define('COLLECTIONS_PATH', '/mnt/metadata-review');
   define('XML_OUTPUT_PATH', '/ready-for-datastream-replace');
   define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
