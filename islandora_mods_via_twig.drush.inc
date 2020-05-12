@@ -132,9 +132,11 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       foreach ($lines as $line) {
         if (strlen($line) > 0) {    // skip any blank rows in the .tsv
           $row = array();
-          foreach (str_getcsv($line, SEPERATOR) as $key => $field )
+          foreach (str_getcsv($line, SEPERATOR) as $key => $field ) {
             // echo "key => field: " . print_r($key, TRUE) . " => " . print_r($field, TRUE) . "\n";
             $row[ strtolower($headers[ $key ]) ] = trim($field);    // make sure we convert headers (keys) to lowercase!
+          }
+
           $data = array_filter( $row );  // echo "data: \n", print_r($data, TRUE), "\n";
 
           $pid = $data['pid'];    // fetch the PID and check it for proper form
@@ -156,7 +158,8 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
 
           $xml_path = "$xml_dir/$xml" . str_replace(":", "_", $pid) . "_MODS.xml";
           $imi_like_data['data'] = $data;
-          $rendered = $Twig->render($TwigString, $imi_like_data);    // echo "rendered: \n".$rendered."\n\n";
+          $rendered = $Twig->render($TwigString, $imi_like_data);
+          echo "rendered: \n".$rendered."\n\n";
 
           // pretty-print the $rendered xml to a pid-named file in the $collection directory
           $dom = new DOMDocument('1.0','UTF-8');
