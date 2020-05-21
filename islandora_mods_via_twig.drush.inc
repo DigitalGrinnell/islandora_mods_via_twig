@@ -269,7 +269,8 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         $pid = $blast[0] . ':' . $blast[1];
         $pid_list[$idx++] = $pid;
         $pattern = "/$pid *\t/";
-        $replacement = "# $pid - reviewed and modified as part of $target_collection";
+        $dt = date(DATE_RFC822);
+        $replacement = "# $pid - reviewed and modified at $dt as part of $target_collection";
         $replaced = 0;
         drush_print("Now processing PID: '$pid', pattern: '$pattern'");
 
@@ -280,8 +281,8 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
           if (preg_match($pattern, $tsv_contents)) {
             drush_print("    Found $pid in $path.");
             preg_replace($pattern, $replacement, $tsv_contents, 1, $replaced);   // only do ONE replacment!
-            drush_print("      Proposing $replaced replacements. New fields say: '$replacement'");
-            // file_put_contents($path, $tsv_contents);
+            drush_print("      Executing $replaced replacement(s).  New fields say: '$replacement'");
+            file_put_contents($path, $tsv_contents);
           }
         }
       }
