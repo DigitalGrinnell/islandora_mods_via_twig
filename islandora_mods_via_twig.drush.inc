@@ -278,7 +278,7 @@ function drush_islandora_mods_post_processing($target_collection = 'social-justi
           $tsv_contents = file_get_contents($path);
           if (preg_match($pattern, $tsv_contents)) {
             drush_print("    Found $pid in $path.");
-            preg_replace($pattern, $replacement, $tsv_contents, -1, &$replaced);
+            preg_replace($pattern, $replacement, $tsv_contents, -1, $replaced);
             drush_print("      Proposing $replaced replacements. New fields say: '$replacement'");
             // file_put_contents($path, $tsv_contents);
           }
