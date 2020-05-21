@@ -33,6 +33,23 @@ function islandora_mods_via_twig_drush_command() {
     // 'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',  // No bootstrap at all?
   );
 
+  // The 'islandora_mods_post_processing' command.
+  $commands['islandora_mods_post_processing'] = array(
+    'description' => dt("Find a collection's ./ready-for-datastream-replace/*.used files and comment out found PIDs from shared collection mods.tsv files."),
+    'drupal dependencies' => array(
+      'islandora',
+    ),
+    'arguments' => array(
+      'collection' => dt('The name of the collection to be examined for *.used files.  Defaults to "social-justice".'),
+    ),
+    'aliases' => array('imvt'),
+    'examples' => array(
+      'drush -u 1 islandora_mods_post_processing social-justice' => dt('Process ../social-justice/ready-for-database-replace/*.used files.'),
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+    // 'bootstrap' => 'DRUSH_BOOTSTRAP_FULL',  // No bootstrap at all?
+  );
+
   return $commands;
 }
 
@@ -172,5 +189,105 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   }    // end: foreach (scandir(COLLECTIONS_PATH)...
 
   echo "\n\ndrush islandora_mods_via_twig is finished!\n\n";
+
+}
+
+/**
+ * Implements drush_hook_COMMAND().
+ *
+ * The command callback is where the action takes place.
+ *
+ * The function name should be same as command name but with dashes turned to
+ * underscores and 'drush_commandfile_' prepended, where 'commandfile' is
+ * taken from the file 'commandfile.drush.inc', which in this case is
+ * 'mods_via_twig'. Note also that a simplification step is also done in instances
+ * where the commandfile name is the same as the beginning of the command name,
+ * "drush_example_example_foo" is simplified to just "drush_example_foo".
+ * To also implement a hook that is called before your command, implement
+ * "drush_hook_pre_example_foo".  For a list of all available hooks for a
+ * given command, run drush in --debug mode.
+ *
+ * If for some reason you do not want your hook function to be named
+ * after your command, you may define a 'callback' item in your command
+ * object that specifies the exact name of the function that should be
+ * called.
+ *
+ * In this function, all of Drupal's API is (usually) available, including
+ * any functions you have added in your own modules/themes.
+ *
+ * @see drush_invoke()
+ * @see drush.api.php
+ */
+function drush_islandora_mods_post_processing($target_collection = 'social-justice') {
+
+  define('SEPERATOR', "\t");
+  // define('TWIG', './sites/default/files/collections/Digital-Grinnell-MODS-Master-Rev18.twig');
+  // define('COLLECTIONS_PATH', './sites/default/files/collections/');
+  define('TWIG', '/mnt/metadata-review/Digital-Grinnell-MODS-Master.twig');
+  define('COLLECTIONS_PATH', '/mnt/metadata-review');
+  define('XML_OUTPUT_PATH', '/ready-for-datastream-replace');
+  define('STORAGE_PATH', '//STORAGE/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1');
+
+  // Note that the TWIG and COLLECTIONS_PATH defined above depend on the following mount/mapping on DGDocker1...
+  //  docker exec -it isle-apache-dg bash
+  //  mount -t cifs -o username=mcfatem /storage.grinnell.edu/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1 /mnt/metadata-review
+
+  drush_print("\n\n\nWelcome to drush islandora_mods_post_processing!\n");
+
+  // check the COLLECTIONS_PATH, it is a directory?
+  if (!is_dir(COLLECTIONS_PATH)) {
+    return drush_set_error('Invalid COLLECTIONS_PATH', dt("The specified collections path, ".COLLECTIONS_PATH.", is not a valid directory."));
+  }
+
+  // make a list (array) of all the .tsv files in COLLECTIONS_PATH
+  $tsv_list = iterator_to_array(
+    new GlobIterator(COLLECTIONS_PATH . "/*/*.tsv", GlobIterator::CURRENT_AS_PATHNAME) );
+  $count = count($tsv_list);
+  drush_print("The collections contain $count .tsv files to check and modify.");
+
+  // loop through all the directories in COLLECTIONS_PATH
+  $paths = scandir(COLLECTIONS_PATH);   // echo "$paths: ", print_r($paths, TRUE);
+
+  foreach ($paths as $collection) {    // drush_print("Now processing $collection.");
+    if ($collection == $target_collection && $collection != '.' && $collection != '..' && is_dir(COLLECTIONS_PATH."/".$collection)) {
+      drush_print("Now processing the collection in: $collection.");
+      // look for .used files in THE ./ready-for-datastream-replace directory inside
+      $it = iterator_to_array(
+        new GlobIterator(COLLECTIONS_PATH . "/$collection/ready-for-datastream-replace/*.used", GlobIterator::CURRENT_AS_PATHNAME) );
+      $count = count($it);
+      if ($count == 0) {
+        return drush_set_error('No .used files found', dt("The $collection directory contains NO ./ready-for-datastream-replace/*.used files."));
+      }
+
+      $pid_list = array();
+      $idx = 0
+
+      // loop through all the found .used filenames...  build a list of .used PIDs
+      foreach ($it as $used) {
+        $blast = explode('_', $used, 3);
+        $pid = $blast[0] . ':' . $blast[1];
+        $pid_list[$idx++] = $pid;
+        $pattern = '/^' . $blast[0] . '\:' . $blast[1] . '\w+\t/i';
+        $replacement = "# $pid - reviewed and modified as part of $target_collection";
+        $replaced = 0;
+        drush_print("Now processing PID: $pid...");
+
+        // inner loop through all the gathered .tsv files
+        foreach ($tsv_list as $path) {
+          drush_print("  Checking $path for $pid...");
+          $tsv_contents = file_get_contents($path);
+          if (preg_match($pattern, $tsv_contents) {
+            drush_print("    Found $pid in $path.");
+            preg_replace($pattern, $replacement, $tsv_contents, -1, &$replaced);
+            drush_print("      Proposing $replaced replacements. New fields say: '$replacement'");
+            // file_put_contents($path, $tsv_contents);
+          }
+        }
+      }
+    }
+
+  }    
+
+  echo "\n\ndrush islandora_mods_post_processing is finished!\n\n";
 
 }
