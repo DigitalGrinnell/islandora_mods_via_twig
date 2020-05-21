@@ -276,7 +276,7 @@ function drush_islandora_mods_post_processing($target_collection = 'social-justi
         foreach ($tsv_list as $path) {
           drush_print("  Checking $path for $pid...");
           $tsv_contents = file_get_contents($path);
-          if (preg_match($pattern, $tsv_contents) {
+          if (preg_match($pattern, $tsv_contents)) {
             drush_print("    Found $pid in $path.");
             preg_replace($pattern, $replacement, $tsv_contents, -1, &$replaced);
             drush_print("      Proposing $replaced replacements. New fields say: '$replacement'");
