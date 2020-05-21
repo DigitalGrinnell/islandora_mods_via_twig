@@ -264,13 +264,14 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
 
       // loop through all the found .used filenames...  build a list of .used PIDs
       foreach ($it as $used) {
-        $blast = explode('_', $used, 3);
+        $filename = basename($used);
+        $blast = explode('_', $filename, 3);
         $pid = $blast[0] . ':' . $blast[1];
         $pid_list[$idx++] = $pid;
-        $pattern = '/^' . $blast[0] . '\:' . $blast[1] . '\w+\t/i';
+        $pattern = '/^' . $blast[0] . '\:' . $blast[1] . '\w+\t/';
         $replacement = "# $pid - reviewed and modified as part of $target_collection";
         $replaced = 0;
-        drush_print("Now processing PID: $pid...");
+        drush_print("Now processing PID: '$pid', pattern: '$pattern'");
 
         // inner loop through all the gathered .tsv files
         foreach ($tsv_list as $path) {
