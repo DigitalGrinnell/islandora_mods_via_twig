@@ -259,8 +259,8 @@ function drush_islandora_mods_post_processing($target_collection = 'social-justi
         return drush_set_error('No .used files found', dt("The $collection directory contains NO ./ready-for-datastream-replace/*.used files."));
       }
 
-      $pid_list = array();
-      $idx = 0
+      $pid_list = array( );
+      $idx = 0;
 
       // loop through all the found .used filenames...  build a list of .used PIDs
       foreach ($it as $used) {
@@ -286,7 +286,7 @@ function drush_islandora_mods_post_processing($target_collection = 'social-justi
       }
     }
 
-  }    
+  }
 
   echo "\n\ndrush islandora_mods_post_processing is finished!\n\n";
 
