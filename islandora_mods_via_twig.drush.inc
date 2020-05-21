@@ -268,7 +268,7 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         $blast = explode('_', $filename, 3);
         $pid = $blast[0] . ':' . $blast[1];
         $pid_list[$idx++] = $pid;
-        $pattern = '/^' . $pid . ' *\t/';
+        $pattern = "/$pid *\t/";
         $replacement = "# $pid - reviewed and modified as part of $target_collection";
         $replaced = 0;
         drush_print("Now processing PID: '$pid', pattern: '$pattern'");
