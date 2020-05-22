@@ -35,14 +35,14 @@ function islandora_mods_via_twig_drush_command() {
 
   // The 'islandora_mods_post_processing' command.
   $commands['islandora_mods_post_processing'] = array(
-    'description' => dt("Find a collection's ./ready-for-datastream-replace/*.used files and comment out found PIDs from shared collection mods.tsv files."),
+    'description' => dt("Find a collection's ./ready-for-datastream-replace/*.used files and comment out found PIDs from all *.tsv files."),
     'drupal dependencies' => array(
       'islandora',
     ),
     'arguments' => array(
       'collection' => dt('The name of the collection to be examined for *.used files.  Defaults to "social-justice".'),
     ),
-    'aliases' => array('imvt'),
+    'aliases' => array('impp'),
     'examples' => array(
       'drush -u 1 islandora_mods_post_processing social-justice' => dt('Process ../social-justice/ready-for-database-replace/*.used files.'),
     ),
