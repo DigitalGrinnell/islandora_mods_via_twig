@@ -267,10 +267,13 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         $filename = basename($used);
         $blast = explode('_', $filename, 3);
         $pid = $blast[0] . ':' . $blast[1];
+        $pidx = $blast[0] . '::' . $blast[1];
         $pid_list[$idx++] = $pid;
-        $pattern = "/$pid *\t/";
+        // $pattern = "/$pid *\t/";
+        $pattern = "/# $pid - reviewed and modified at .+ as part of .+\/Volumes";
         $dt = date(DATE_RFC822);
-        $replacement = "# $pid - reviewed and modified at $dt as part of $target_collection";
+        // $replacement = "# $pidx - reviewed and modified at $dt as part of $target_collection \t";
+        $replacement = "# $pidx - reviewed and modified at $dt as part of $target_collection \t/Volumes";
         $replaced = 0;
         drush_print("Now processing PID: '$pid', pattern: '$pattern'");
 
@@ -278,13 +281,14 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         foreach ($tsv_list as $path) {
           drush_print("  Checking $path for $pid...");
           $tsv_contents = file_get_contents($path);
+          // if $pattern is found
           if (preg_match($pattern, $tsv_contents)) {
             drush_print("    Found $pid in $path.");
             $new_contents = preg_replace($pattern, $replacement, $tsv_contents, 1, $replaced);   // only do ONE replacment!
             if ($replaced > 0) {
               drush_print("      Executed $replaced replacement(s).  New fields say: '$replacement'");
-              file_put_contents($path, $new_contents);
-              drush_print("    Replacment saved to $path.");
+              // file_put_contents($path, $new_contents);
+              // drush_print("    Replacment saved to $path.");
             } else {
               drush_print("    Nothing to replace.  Moving on.");
             }
