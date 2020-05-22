@@ -270,7 +270,7 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         $pidx = $blast[0] . '::' . $blast[1];
         $pid_list[$idx++] = $pid;
         // $pattern = "/$pid *\t/";
-        $pattern = "/# $pid - reviewed and modified at .+ as part of .+\/Volumes";
+        $pattern = "/# $pid - reviewed and modified at .+ as part of .+\/Volumes/";
         $dt = date(DATE_RFC822);
         // $replacement = "# $pidx - reviewed and modified at $dt as part of $target_collection \t";
         $replacement = "# $pidx - reviewed and modified at $dt as part of $target_collection \t/Volumes";
