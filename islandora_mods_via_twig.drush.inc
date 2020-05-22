@@ -287,8 +287,8 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
             $new_contents = preg_replace($pattern, $replacement, $tsv_contents, 1, $replaced);   // only do ONE replacment!
             if ($replaced > 0) {
               drush_print("      Executed $replaced replacement(s).  New fields say: '$replacement'");
-              // file_put_contents($path, $new_contents);
-              // drush_print("    Replacment saved to $path.");
+              file_put_contents($path, $new_contents);
+              drush_print("    Replacment saved to $path.");
             } else {
               drush_print("    Nothing to replace.  Moving on.");
             }
