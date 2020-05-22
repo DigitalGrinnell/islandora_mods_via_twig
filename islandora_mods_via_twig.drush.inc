@@ -281,8 +281,13 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
           if (preg_match($pattern, $tsv_contents)) {
             drush_print("    Found $pid in $path.");
             preg_replace($pattern, $replacement, $tsv_contents, 1, $replaced);   // only do ONE replacment!
-            drush_print("      Executing $replaced replacement(s).  New fields say: '$replacement'");
-            file_put_contents($path, $tsv_contents);
+            if ($replaced > 0) {
+              drush_print("      Executed $replaced replacement(s).  New fields say: '$replacement'");
+              file_put_contents($path, $tsv_contents);
+              drush_print("    Replacment saved to $path.");
+            } else {
+              drush_print("    Nothing to replace.  Moving on.");
+            }
           }
         }
       }
