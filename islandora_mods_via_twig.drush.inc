@@ -148,6 +148,11 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       // loop on the .tsv line-by-line, one object at a time
       foreach ($lines as $line) {
         if (strlen($line) > 0) {    // skip any blank rows in the .tsv
+
+          // take care of any unexcapsed &, smart quotes, or other squirrely characters!
+          $noSmartQuotes = iconv('UTF-8', 'ASCII//TRANSLIT', $line);
+          $line = htmlspecialchars($noSmartQuotes, ENT_NOQUOTES, 'UTF-8', false);
+
           $row = array();
           foreach (str_getcsv($line, SEPERATOR) as $key => $field ) {
             // echo "key => field: " . print_r($key, TRUE) . " => " . print_r($field, TRUE) . "\n";
