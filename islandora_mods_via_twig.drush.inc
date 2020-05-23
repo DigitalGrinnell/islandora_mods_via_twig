@@ -157,6 +157,11 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
           $data = array_filter( $row );  // echo "data: \n", print_r($data, TRUE), "\n";
 
           $pid = $data['pid'];    // fetch the PID and check it for proper form
+          if (startsWith($pid, '#') {  // found a comment...skip it!
+            echo "Skipping comment row that begins with... '$pid'";
+            continue;
+          }
+
           $pos = strpos($pid, "grinnell:");
           if ($pos === false || $pos !== 0) {
             echo "data: \n", print_r($data, TRUE), "\n";
