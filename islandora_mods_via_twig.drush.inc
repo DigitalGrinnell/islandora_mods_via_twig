@@ -326,8 +326,8 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         $pidx = $blast[0] . '::' . $blast[1];
         $pid_list[$idx++] = $pid;
         $pattern = "/^$pid *\t/m";   // match only at the start of a new line!
-        $dt = date(DATE_RFC822);
-        $replacement = "# $pidx - reviewed and modified at $dt as part of $target_collection \t";
+        $dt = date("M j G:i T Y");
+        $replacement = "# $pidx - reviewed and modified $dt as part of $target_collection \t";
         $replaced = 0;
         drush_print("Now processing PID: '$pid', pattern: '$pattern'");
 
