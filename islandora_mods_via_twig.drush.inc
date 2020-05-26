@@ -122,7 +122,7 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   } else {
     $header_string = substr($TwigString, $pos);
     $len = strpos($header_string, "#}");
-    $header_list = str_getcsv(substr($header_string, 0, $len);
+    $header_list = str_getcsv(substr($header_string, 0, $len));
   }
 
   // create a new Twig environment
