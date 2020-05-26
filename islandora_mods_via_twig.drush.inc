@@ -156,21 +156,23 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       // Check the $headers against the Twig $headers_list to verify that all of the $headers can be found in $headers_list
       drush_print("Checking CSV headers against Twig template headers list...");
       $failed = false;
+
       foreach ($headers as $h) {
         $needle = trim($h);
         $matched = false;
-        foreach ($headers_list as $hay) {
+        foreach ($header_list as $hay) {
           if (trim($hay) === $needle) {
             drush_print("  - CSV header vs. Twig match found for '$needle'.  Moving on.");
             $matched = true;
             break;
           }
-        if ($matched) {
-          continue;
-        } else {
-          $failed = true;
-          drush_print("  - NO CSV/Twig header match found for '$needle'!");
-          continue;
+          if ($matched) {
+            continue;
+          } else {
+            $failed = true;
+            drush_print("  - NO CSV/Twig header match found for '$needle'!");
+            continue;
+          }
         }
       }
 
