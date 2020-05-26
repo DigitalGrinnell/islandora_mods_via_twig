@@ -126,8 +126,8 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   }
 
   // @TODO...dump the $header_list
-  drush_print("var_dump() of header_list...");
-  var_dump($header_list);
+  // drush_print("var_dump() of header_list...");
+  // var_dump($header_list);
 
   // create a new Twig environment
   $Twig = new \Twig_Environment(new \Twig_Loader_String());
