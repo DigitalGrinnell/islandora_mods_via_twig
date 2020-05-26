@@ -164,21 +164,21 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       $failed = false;
 
       foreach ($headers as $h) {
-        $needle = trim($h);
+        $needle = trim($h);           // $needle is the trimmed header from the CSV file
         $matched = false;
-        foreach ($header_list as $hay) {
+        foreach ($header_list as $hay) {   // $hay is the header from the Twig template
           if (trim($hay) === $needle) {
             drush_print("  - CSV header vs. Twig match found for '$needle'.  Moving on.");
             $matched = true;
             break;
           }
-          if ($matched) {
-            continue;
-          } else {
-            $failed = true;
-            drush_print("  - NO CSV/Twig header match found for '$needle'!");
-            continue;
-          }
+        }
+        if ($matched) {
+          continue;
+        } else {
+          $failed = true;
+          drush_print("  - NO CSV/Twig header match found for '$needle'!");
+          continue;
         }
       }
 
