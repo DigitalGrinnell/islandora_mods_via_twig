@@ -120,7 +120,9 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   if ($pos === false) {
     return drush_set_error('Failed to find Twig header list', dt("Could not find substring 'PID, ' in the specified Twig template."));
   } else {
-    $header_list = str_getcsv($TwigString[$pos], ",");
+    $header_string = substr($TwigString, $pos);
+    $len = strpos($header_string, "#}")
+    $header_list = str_getcsv(substr($header_string, 0, $len);
   }
 
   // create a new Twig environment
