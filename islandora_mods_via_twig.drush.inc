@@ -125,6 +125,10 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
     $header_list = str_getcsv(substr($header_string, 0, $len));
   }
 
+  // @TODO...dump the $header_list
+  drush_print("var_dump() of header_list...");
+  var_dump($header_list);
+
   // create a new Twig environment
   $Twig = new \Twig_Environment(new \Twig_Loader_String());
   $Twig->setLoader(new \Twig_Loader_String());
