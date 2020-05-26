@@ -159,12 +159,13 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       $headers = str_getcsv(array_shift( $lines ), SEPERATOR);  // echo "headers: \n", print_r($headers, TRUE), "\n\n";
       $data = array();
 
-      // Check the $headers against the Twig $headers_list to verify that all of the $headers can be found in $headers_list
+      // Check the $headers from the CSV file against the Twig $headers_list to verify that all of the $headers can be found in $headers_list
       drush_print("Checking CSV headers against Twig template headers list...");
       $failed = false;
 
       foreach ($headers as $h) {
-        $needle = trim($h);           // $needle is the trimmed header from the CSV file
+        $needle = trim($h);                // $needle is the trimmed header from the CSV file
+        if (strlen($needle) < 1) { break; }
         $matched = false;
         foreach ($header_list as $hay) {   // $hay is the header from the Twig template
           if (trim($hay) === $needle) {
