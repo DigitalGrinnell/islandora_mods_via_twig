@@ -69,6 +69,9 @@ function islandora_mods_via_twig_drush_command() {
       'collection' => dt('The name of the collection to be processed.  Defaults to "social-justice".'),
     ),
     'aliases' => array('imvt'),
+    'options' => array(
+      'dryRun' => t("If set, this option instructs the operation to run tests but not commit changes.\n"),
+    ),
     'examples' => array(
       'drush -u 1 islandora_mods_via_twig social-justice' => dt('Process ../social-justice/mods-imvt.tsv.'),
     ),
@@ -147,6 +150,8 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   //  docker exec -it isle-apache-dg bash
   //  mount -t cifs -o username=mcfatem /storage.grinnell.edu/LIBRARY/ALLSTAFF/DG-Metadata-Review-2020-r1 /mnt/metadata-review
 
+  $dryRun = drush_get_option('dryRun', FALSE);
+
   echo "\n\n\nWelcome to drush islandora_mods_via_twig!\n";
 
   // Twig handling is based on https://stackoverflow.com/questions/24888372/drupal-8-render-twig-from-string-with-twig-functions
@@ -201,6 +206,12 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
         drush_print("All CSV headers were found in the Twig template. This process may proceed.");
       } else {
         return drush_set_error('CSV/Twig header mis-match detected', dt("One or more CSV/Twig header mis-matches were detected.  See messages above for details!  This process is terminated."));
+      }
+
+      // In case of a dry-run... we're done.
+      if ($dryRun) {
+        drush_print("The --dryRun option is set.  This run will be terminated without making any changes.");
+        return;
       }
 
       // loop on the .tsv line-by-line, one object at a time
