@@ -6,6 +6,49 @@
  */
 
 /**
+ * Helper functions
+ *
+ */
+function fetch_twig_headers($twig) {
+   // Look for the header list in the Twig template (as a string) and return comma separated values from it into an array.
+   $pos = strpos($twig, "PID, ");
+   if ($pos === false) {
+     return drush_set_error('Failed to find Twig header list', dt("Could not find substring 'PID, ' in the specified Twig template."));
+   } else {
+     $header_string = substr($TwigString, $pos);
+     $len = strpos($header_string, "#}");
+     $header_list = str_getcsv(substr($header_string, 0, $len));
+   }
+ }
+
+function check_csv_vs_twig_headers($csv_headers, $twig_headers) {
+  // Check the $csv_headers from the CSV file against the $twig_headers to verify that all of the $csv_headers can be found in $twig_headers
+  drush_print("Checking CSV headers against Twig template headers list...");
+  $failed = false;
+
+  foreach ($csv_headers as $h) {
+    $needle = trim($h);                // $needle is the trimmed header from the CSV file
+    if (strlen($needle) < 1) { break; }
+    $matched = false;
+    foreach ($twig_headers as $hay) {   // $hay is the header from the Twig template
+      if (trim($hay) === $needle) {
+        drush_print("  - CSV header vs. Twig match found for '$needle'.  Moving on.");
+        $matched = true;
+        break;
+      }
+    }
+    if ($matched) {
+      continue;
+    } else {
+      $failed = true;
+      drush_print("  - NO CSV/Twig header match found for '$needle'!");
+      continue;
+    }
+  }
+  return !$failed;
+}
+
+/**
  * Implements hook_drush_command().
  *
  * In this hook, you specify which commands your drush module makes available, what it does and
@@ -115,15 +158,8 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
     return drush_set_error('Failed to Read Twig', dt("The specified Twig template, ".TWIG." could not be read."));
   }
 
-  // Look for the header list in $TwigString and load comma separated values from it into an array.
-  $pos = strpos($TwigString, "PID, ");
-  if ($pos === false) {
-    return drush_set_error('Failed to find Twig header list', dt("Could not find substring 'PID, ' in the specified Twig template."));
-  } else {
-    $header_string = substr($TwigString, $pos);
-    $len = strpos($header_string, "#}");
-    $header_list = str_getcsv(substr($header_string, 0, $len));
-  }
+  // Fetch the header list from $TwigString and load comma separated values from it into an array.
+  $twig_headers = fetch_twig_headers($TwigString);
 
   // @TODO...dump the $header_list
   // drush_print("var_dump() of header_list...");
@@ -160,35 +196,12 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
       $data = array();
 
       // Check the $headers from the CSV file against the Twig $headers_list to verify that all of the $headers can be found in $headers_list
-      drush_print("Checking CSV headers against Twig template headers list...");
-      $failed = false;
-
-      foreach ($headers as $h) {
-        $needle = trim($h);                // $needle is the trimmed header from the CSV file
-        if (strlen($needle) < 1) { break; }
-        $matched = false;
-        foreach ($header_list as $hay) {   // $hay is the header from the Twig template
-          if (trim($hay) === $needle) {
-            drush_print("  - CSV header vs. Twig match found for '$needle'.  Moving on.");
-            $matched = true;
-            break;
-          }
-        }
-        if ($matched) {
-          continue;
-        } else {
-          $failed = true;
-          drush_print("  - NO CSV/Twig header match found for '$needle'!");
-          continue;
-        }
-      }
-
-      if ($failed) {
-        return drush_set_error('CSV/Twig header mis-match detected', dt("One or more CSV/Twig header mis-matches were detected.  See messages above for details!  This process is terminated."));
-      } else {
+      $ok = check_csv_vs_twig_headers($headers, $twig_headers);
+      if ($ok) {
         drush_print("All CSV headers were found in the Twig template. This process may proceed.");
+      } else {
+        return drush_set_error('CSV/Twig header mis-match detected', dt("One or more CSV/Twig header mis-matches were detected.  See messages above for details!  This process is terminated."));
       }
-
 
       // loop on the .tsv line-by-line, one object at a time
       foreach ($lines as $line) {
@@ -350,9 +363,6 @@ function drush_islandora_mods_via_twig_islandora_mods_post_processing($target_co
         }
       }
     }
-
   }
-
   echo "\n\ndrush islandora_mods_post_processing is finished!\n\n";
-
 }
