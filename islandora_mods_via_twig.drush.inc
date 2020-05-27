@@ -15,7 +15,7 @@ function fetch_twig_headers($twig) {
    if ($pos === false) {
      return drush_set_error('Failed to find Twig header list', dt("Could not find substring 'PID, ' in the specified Twig template."));
    } else {
-     $header_string = substr($TwigString, $pos);
+     $header_string = substr($twig, $pos);
      $len = strpos($header_string, "#}");
      $header_list = str_getcsv(substr($header_string, 0, $len));
    }
@@ -166,9 +166,9 @@ function drush_islandora_mods_via_twig($target_collection = 'social-justice') {
   // Fetch the header list from $TwigString and load comma separated values from it into an array.
   $twig_headers = fetch_twig_headers($TwigString);
 
-  // @TODO...dump the $header_list
-  // drush_print("var_dump() of header_list...");
-  // var_dump($header_list);
+  // @TODO...dump the $twig_headers
+  // drush_print("var_dump() of twig_headers...");
+  // var_dump($twig_headers);
 
   // create a new Twig environment
   $Twig = new \Twig_Environment(new \Twig_Loader_String());
